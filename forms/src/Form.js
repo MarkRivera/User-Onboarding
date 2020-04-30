@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from "yup";
+import axios from 'axios';
 
 function Form() {
     const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ function Form() {
         tosChecked: ""
     });
 
+    const [post, setPost] = useState();
+
     const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const formSchema = yup.object().shape({
@@ -24,6 +27,23 @@ function Form() {
         password: yup.string().min(6, "Passwords must be at least 6 characters long").required("Password is required"),
         tosChecked: yup.boolean().oneOf([true], "Please accept the Terms Of Service")
     });
+
+    const validateChange = e => {
+        yup
+          .reach(formSchema, e.target.name)
+          .validate(e.target.value)
+          .then(valid => {
+              setErrors({
+                  ...errors, 
+                  [e.target.name]: ""
+            })
+          })
+          .catch(err => {
+              setErrors({
+                  ...errors, [e.target.name]: err.errors[0]
+              })
+          })
+    };
 
 
     useEffect(() => {
@@ -36,14 +56,32 @@ function Form() {
     // Handling Change 
 
     const handleChange = event => {
+        event.persist();
+        validateChange(event);
         setFormData({
             ...formData,
             [event.target.name]: event.target.type === "checkbox" ? event.target.checked : event.target.value
         })
     };
 
+    // Form Submit
+
+    const formSubmit = event => {
+        event.preventDefault();
+        axios.post("https://reqres.in/api/users", formData).then(response => {
+            setPost(response.data);
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                tosChecked: false
+            });
+        }).catch(err => {
+            console.log(err.response);
+        })
+    }
     return (
-      <form className="signup-form">
+      <form className="signup-form" onSubmit={event => formSubmit(event)} >
           <label htmlFor="name">
               <strong>Full Name: </strong>
               <input type="text" id="full-name" name="name" onChange={event => handleChange(event)} value={formData.name}/>
@@ -66,10 +104,13 @@ function Form() {
                     name="tosChecked" 
                     id="tos"
                     checked={formData.tosChecked}
+                    value={formData.tosChecked}
                     onChange={event => handleChange(event)} />
           </label>
 
           <button id="sub-btn" disabled={ buttonDisabled }>Submit!</button>
+
+          <pre>{JSON.stringify(post)}</pre>
       </form>  
     );
 }
