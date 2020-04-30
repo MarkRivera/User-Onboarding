@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+}
+
+.signup-form {
+  position: relative;
+  top: 20vh;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+}
+
+label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
