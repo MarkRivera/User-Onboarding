@@ -84,17 +84,17 @@ function Form() {
       <form className="signup-form" onSubmit={event => formSubmit(event)} >
           <label htmlFor="name">
               <strong>Full Name: </strong>
-              <input type="text" id="full-name" name="name" onChange={event => handleChange(event)} value={formData.name}/>
+              <input type="text" id="full-name" name="name" onChange={event => handleChange(event)} value={formData.name} data-cy="name"/>
           </label>
 
           <label htmlFor="email">
               <strong>Email: </strong>
-              <input type="email" id="email" name="email" onChange={event => handleChange(event)} value={formData.email}/>
+              <input type="email" id="email" name="email" onChange={event => handleChange(event)} value={formData.email} data-cy="email"/>
           </label>
 
           <label htmlFor="password">
             <strong>Password: </strong>
-            <input type="password" id="password" name="password"  onChange={event => handleChange(event)} value={formData.password}/>
+            <input type="password" id="password" name="password"  onChange={event => handleChange(event)} value={formData.password} data-cy="password"/>
           </label>
 
           <label>
@@ -105,10 +105,11 @@ function Form() {
                     id="tos"
                     checked={formData.tosChecked}
                     value={formData.tosChecked}
-                    onChange={event => handleChange(event)} />
+                    onChange={event => handleChange(event)} 
+                    data-cy="tos"/>
           </label>
 
-          <button id="sub-btn" disabled={ buttonDisabled }>Submit!</button>
+          <button id="sub-btn" disabled={ buttonDisabled } data-cy="sub-btn">Submit!</button>
 
           <pre>{JSON.stringify(post)}</pre>
       </form>  
