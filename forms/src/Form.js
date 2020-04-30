@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from "yup";
 
-
 function Form() {
     const [formData, setFormData] = useState({
         name: "",
@@ -15,14 +14,16 @@ function Form() {
         email: "",
         password: "",
         tosChecked: ""
-    })
+    });
+
+    const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const formSchema = yup.object().shape({
         name: yup.string().required("Please enter your full name"),
         email: yup.string().email("Must be a valid email address").required(),
-        password: yup.string().password().min(6, "Passwords must be at least 6 characters long").required("Password is required"),
+        password: yup.string().min(6, "Passwords must be at least 6 characters long").required("Password is required"),
         tosChecked: yup.boolean().oneOf([true], "Please accept the Terms Of Service")
-    })
+    });
 
 
     useEffect(() => {
@@ -35,13 +36,9 @@ function Form() {
     // Handling Change 
 
     const handleChange = event => {
-        const target = event.target;
-        const value = target.name === 'tosChecked' ? target.checked : target.value;
-
-        
         setFormData({
             ...formData,
-            [target.name]: value
+            [event.target.name]: event.target.type === "checkbox" ? event.target.checked : event.target.value
         })
     };
 
@@ -49,17 +46,17 @@ function Form() {
       <form className="signup-form">
           <label htmlFor="name">
               <strong>Full Name: </strong>
-              <input type="text" id="full-name" name="name" onChange={event => handleChange(event)} />
+              <input type="text" id="full-name" name="name" onChange={event => handleChange(event)} value={formData.name}/>
           </label>
 
           <label htmlFor="email">
               <strong>Email: </strong>
-              <input type="email" id="email" name="email" onChange={event => handleChange(event)} />
+              <input type="email" id="email" name="email" onChange={event => handleChange(event)} value={formData.email}/>
           </label>
 
           <label htmlFor="password">
             <strong>Password: </strong>
-            <input type="password" id="password" name="password"  onChange={event => handleChange(event)} />
+            <input type="password" id="password" name="password"  onChange={event => handleChange(event)} value={formData.password}/>
           </label>
 
           <label>
@@ -67,12 +64,12 @@ function Form() {
               <input 
                     type="checkbox" 
                     name="tosChecked" 
-                    id="tos" 
-                    value={formData.tosChecked}
+                    id="tos"
+                    checked={formData.tosChecked}
                     onChange={event => handleChange(event)} />
           </label>
 
-          <button>Submit!</button>
+          <button id="sub-btn" disabled={ buttonDisabled }>Submit!</button>
       </form>  
     );
 }
